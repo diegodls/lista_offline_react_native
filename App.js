@@ -6,7 +6,6 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { SearchBar } from 'react-native-elements'
@@ -18,12 +17,14 @@ export default class App extends Component {
 
 
   state = {
-    nameToAdd: 'Teste 99',
+    nameToAdd: 'Teste ' + Math.round(Math.random() * 1000),
     emailToAdd: 'teste99@teste.com',
     avatarToAdd: 'meh',
-    contatos: [],
+    contactsToSave: [],
+    contactsToShown: [],
     refreshList: false,
-    searchValue: ""
+    searchValue: "",
+    searchingList: false,
   }
 
   componentDidMount = async () => {
@@ -32,13 +33,15 @@ export default class App extends Component {
 
   recoverFromStorage = async () => {
     const data = await AsyncStorage.getItem('contacts')
-    const contatos = JSON.parse(data) || []
-    this.setState({ contatos, refreshList: false })
+    const contacts = JSON.parse(data) || []
+    this.setState({ contactsToSave: contacts, contactsToShown: contacts, refreshList: false })
 
   }
 
   saveInStorage = () => {
-    AsyncStorage.setItem('contacts', JSON.stringify(this.state.contatos))
+    AsyncStorage.setItem('contacts', JSON.stringify(this.state.contactsToSave))
+    this.recoverFromStorage()
+    
   }
 
   //o metodo abaixo vai gerenciar a atualização da lista
@@ -53,30 +56,32 @@ export default class App extends Component {
   }
 
   saveContact = () => {
-    const contatos = [...this.state.contatos]
-    contatos.push({
-      id: Math.round(Math.random() * 100),
+    const contacts = [...this.state.contactsToSave]
+    contacts.push({
+      id: Math.round(Math.random() * 1000),
       name: this.state.nameToAdd,
       email: this.state.emailToAdd,
       avatar: this.state.avatarToAdd,
     })
-    this.setState({ contatos }, this.saveInStorage)
+    this.setState({ contactsToSave: contacts }, this.saveInStorage)
 
   }
 
   deleteContact = id => {
-    const contatos = this.state.contatos.filter(contact => contact.id != id)
-    this.setState({ contatos }, this.saveInStorage)
+    const contacts = this.state.contactsToSave.filter(contact => contact.id != id)
+    this.setState({ contactsToSave: contacts }, this.saveInStorage)
 
   }
 
   searchContact = (value) => {
-    this.setState({ searchValue: value })
-    const contatosFiltered = this.state.contatos.filter(contact => {
-      return contact.name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) !== -1
-    })
-    this.setState({ contatos: contatosFiltered })
 
+    const contactsToFilter = [...this.state.contactsToSave]
+    this.setState({ searchValue: value }, () => {
+      const contactsFiltered = contactsToFilter.filter(contact => {
+        return contact.name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) !== -1
+      })
+      this.setState({ contactsToShown: contactsFiltered })
+    })
 
   }
 
@@ -119,7 +124,7 @@ export default class App extends Component {
             ListHeaderComponent={this.renderListHeader}
             refreshing={this.state.refreshList}
             onRefresh={this.onRefreshHandler}
-            data={this.state.contatos}
+            data={this.state.contactsToShown}
             keyExtractor={item => `${item.id}`}
             renderItem={({ item }) =>
               <Contact {...item} onDelete={this.deleteContact} />} />
