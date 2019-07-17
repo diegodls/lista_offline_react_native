@@ -8,16 +8,17 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-community/async-storage": "^1.5.0",
+    "@react-native-community/async-storage": "^1.5.1",
     "react": "16.8.6",
-    "react-native": "0.60.0",
+    "react-native": "0.60.3",
+    "react-native-action-button": "^2.8.5",
     "react-native-elements": "^1.1.0",
     "react-native-swipeable": "^0.6.0",
     "react-native-vector-icons": "^6.6.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.0",
-    "@babel/runtime": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/runtime": "^7.5.4",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.8.0",
     "eslint": "^6.0.1",

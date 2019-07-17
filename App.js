@@ -18,6 +18,7 @@ import Contact from './components/contact'
  - Escolher foto ao invés dos avatares
  - Botão de adicionar ao invés do adicionar ali em cima
  - Try/Catch AsyncStorage
+ - Splash Screen, icone e nome
 */
 
 export default class App extends Component {
