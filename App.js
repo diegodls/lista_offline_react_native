@@ -9,15 +9,22 @@ import {
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { SearchBar } from 'react-native-elements'
-
 import Contact from './components/contact'
 
+
+/*Todo
+ - Evento de atualizar dados ao clicar
+ - Checar informações (se digitou algo errado, campos vazios e etc...)
+ - Escolher foto ao invés dos avatares
+ - Botão de adicionar ao invés do adicionar ali em cima
+ - Try/Catch AsyncStorage
+*/
 
 export default class App extends Component {
 
 
   state = {
-    nameToAdd: 'Teste ' + Math.round(Math.random() * 1000),
+    nameToAdd: 'Teste',
     emailToAdd: 'teste99@teste.com',
     avatarToAdd: 'meh',
     contactsToSave: [],
