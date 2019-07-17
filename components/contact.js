@@ -23,7 +23,9 @@ export default props => {
             rightButtons={rightContent}
             onRightActionActivate={() => props.onDelete(props.id)}>
             <View style={styles.container}>
-                <Icon name={props.avatar == null ? 'exclamation' : props.avatar} size={50} />
+                <View style={styles.avatarField}>
+                    <Icon name={props.avatar == null ? 'exclamation' : props.avatar} size={50} />
+                </View>
                 <View style={styles.infoField}>
                     <Text style={styles.idField}>{props.id}</Text>
                     <Text style={styles.nameField}>{props.name}</Text>
@@ -49,9 +51,15 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline'
 
     },
-    avatarField: {
-        backgroundColor: '#CF0',
+    avatarField: {        
         alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: 50,
+        height: 50,
+        
+
 
     },
     infoField: {
@@ -76,7 +84,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingLeft: 15
-        
+
     }
 
 
