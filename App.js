@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   FlatList,
-  TextInput,
   TouchableOpacity,
+  Alert
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { SearchBar } from 'react-native-elements'
@@ -17,7 +16,7 @@ import AddContacts from './components/screens/AddContacts';
 
 
 /*Todo
- - Evento de atualizar dados ao clicar
+ - Evento de atualizar dados ao clicar (trabalhando nisso)
  - Checar informações (se digitou algo errado, campos vazios e etc...)
  - Foto ao invés dos avatares
  - Botão de adicionar ao invés do adicionar ali em cima
@@ -30,7 +29,7 @@ import AddContacts from './components/screens/AddContacts';
 export default class App extends Component {
 
 
-  state = {    
+  state = {
     contactsToSave: [],
     contactsToShown: [],
     refreshList: false,
@@ -48,6 +47,8 @@ export default class App extends Component {
     const contacts = JSON.parse(data) || []
     this.setState({ contactsToSave: contacts, contactsToShown: contacts, refreshList: false })
   }
+
+  w
 
   saveInStorage = () => {
     AsyncStorage.setItem('contacts', JSON.stringify(this.state.contactsToSave))
@@ -75,6 +76,7 @@ export default class App extends Component {
       avatar: contact.avatar,
     })
     this.setState({ contactsToSave: contacts, showAddContacts: false }, this.saveInStorage)
+
   }
 
   deleteContact = id => {
@@ -104,6 +106,9 @@ export default class App extends Component {
 
   }
 
+  alerta = () => {
+    Alert.alert('AAAAAA', 'AAAAAA')
+  }
 
   render() {
     return (
@@ -118,8 +123,16 @@ export default class App extends Component {
             onRefresh={this.onRefreshHandler}
             data={this.state.contactsToShown}
             keyExtractor={item => `${item.id}`}
-            renderItem={({ item }) =>
-              <Contact {...item} onDelete={this.deleteContact} />} />
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity onPress={this.alerta} underlayColor='none'>
+                  <Contact {...item} onDelete={this.deleteContact} />
+                </TouchableOpacity>
+              )
+
+            }
+            }
+          />
         </View>
         <ActionButton
           buttonColor={'#FC0'}

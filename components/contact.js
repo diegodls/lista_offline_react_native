@@ -3,7 +3,7 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign'
 import Swipeable from 'react-native-swipeable'
@@ -51,14 +51,14 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline'
 
     },
-    avatarField: {        
+    avatarField: {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         width: 50,
         height: 50,
-        
+
 
 
     },
