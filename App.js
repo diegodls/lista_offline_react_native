@@ -9,30 +9,34 @@ import {
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { SearchBar } from 'react-native-elements'
+import ActionButton from 'react-native-action-button'
+
+
 import Contact from './components/contact'
+import AddContacts from './components/screens/AddContacts';
 
 
 /*Todo
  - Evento de atualizar dados ao clicar
  - Checar informações (se digitou algo errado, campos vazios e etc...)
- - Escolher foto ao invés dos avatares
+ - Foto ao invés dos avatares
  - Botão de adicionar ao invés do adicionar ali em cima
  - Try/Catch AsyncStorage
  - Splash Screen, icone e nome
+ - Criar metodo para filtrar os contatos, melhorando a visualização
+
 */
 
 export default class App extends Component {
 
 
-  state = {
-    nameToAdd: 'Teste',
-    emailToAdd: 'teste99@teste.com',
-    avatarToAdd: 'meh',
+  state = {    
     contactsToSave: [],
     contactsToShown: [],
     refreshList: false,
     searchValue: "",
     searchingList: false,
+    showAddContacts: false,
   }
 
   componentDidMount = async () => {
@@ -43,13 +47,12 @@ export default class App extends Component {
     const data = await AsyncStorage.getItem('contacts')
     const contacts = JSON.parse(data) || []
     this.setState({ contactsToSave: contacts, contactsToShown: contacts, refreshList: false })
-
   }
 
   saveInStorage = () => {
     AsyncStorage.setItem('contacts', JSON.stringify(this.state.contactsToSave))
     this.recoverFromStorage()
-    
+
   }
 
   //o metodo abaixo vai gerenciar a atualização da lista
@@ -63,16 +66,15 @@ export default class App extends Component {
       })
   }
 
-  saveContact = () => {
+  addContact = contact => {
     const contacts = [...this.state.contactsToSave]
     contacts.push({
       id: Math.round(Math.random() * 1000),
-      name: this.state.nameToAdd,
-      email: this.state.emailToAdd,
-      avatar: this.state.avatarToAdd,
+      name: contact.name,
+      email: contact.email,
+      avatar: contact.avatar,
     })
-    this.setState({ contactsToSave: contacts }, this.saveInStorage)
-
+    this.setState({ contactsToSave: contacts, showAddContacts: false }, this.saveInStorage)
   }
 
   deleteContact = id => {
@@ -104,29 +106,11 @@ export default class App extends Component {
 
 
   render() {
-
     return (
       <View style={styles.container}>
-        <Text>{this.state.searchValue}</Text>
-        <View style={styles.addField}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Nome"
-            onChangeText={nameToAdd => this.setState({ nameToAdd })} />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Email"
-            onChangeText={emailToAdd => this.setState({ emailToAdd })} />
-          <View style={styles.avatarAndSave}>
-            <TextInput
-              style={[styles.textInput, styles.avatar]}
-              placeholder="Avatar"
-              onChangeText={avatarToAdd => this.setState({ avatarToAdd })} />
-            <TouchableOpacity onPress={this.saveContact}>
-              <Text style={styles.saveButton} >SALVAR</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <AddContacts isVisible={this.state.showAddContacts}
+          onSave={this.addContact}
+          onCancel={() => this.setState({ showAddContacts: false })} />
         <View style={styles.scrollFlatlist}>
           <FlatList
             ListHeaderComponent={this.renderListHeader}
@@ -137,6 +121,9 @@ export default class App extends Component {
             renderItem={({ item }) =>
               <Contact {...item} onDelete={this.deleteContact} />} />
         </View>
+        <ActionButton
+          buttonColor={'#FC0'}
+          onPress={() => { this.setState({ showAddContacts: true }) }}></ActionButton>
       </View>
     );
   }
