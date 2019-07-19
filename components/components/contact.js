@@ -22,15 +22,17 @@ export default props => {
             rightActionActivationDistance={200}
             rightButtons={rightContent}
             onRightActionActivate={() => props.onDelete(props.id)}>
-            <View style={styles.container}>
-                <View style={styles.avatarField}>
-                    <Icon name={props.avatar == null ? 'exclamation' : props.avatar} size={50} />
-                </View>
-                <View style={styles.infoField}>
-                    <Text style={styles.idField}>{props.id}</Text>
-                    <Text style={styles.nameField}>{props.name}</Text>
-                    <Text style={styles.emailField}>{props.email}</Text>
-                </View>
+            <View>
+                <TouchableOpacity onPress={() => props.onUpdate(props.id)} style={styles.container}>
+                    <View style={styles.avatarField}>
+                        <Icon name={props.avatar == null ? 'exclamation' : props.avatar} size={50} />
+                    </View>
+                    <View style={styles.infoField}>
+                        <Text style={styles.idField}>{props.id}</Text>
+                        <Text style={styles.nameField}>{props.name}</Text>
+                        <Text style={styles.emailField}>{props.email}</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         </Swipeable>
     )

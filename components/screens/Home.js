@@ -11,8 +11,8 @@ import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 
 
-import Contact from './components/contact'
-import AddContacts from './components/screens/AddContacts';
+import Contact from '../components/contact'
+import AddContacts from './AddContacts';
 
 
 /*Todo
@@ -106,8 +106,8 @@ export default class App extends Component {
 
   }
 
-  alerta = () => {
-    Alert.alert('AAAAAA', 'AAAAAA')
+  updateContact = id => {
+    Alert.alert('Item escolhido:', `${id}`)
   }
 
   render() {
@@ -123,14 +123,8 @@ export default class App extends Component {
             onRefresh={this.onRefreshHandler}
             data={this.state.contactsToShown}
             keyExtractor={item => `${item.id}`}
-            renderItem={({ item }) => {
-              return (
-                <TouchableOpacity onPress={this.alerta} underlayColor='none'>
-                  <Contact {...item} onDelete={this.deleteContact} />
-                </TouchableOpacity>
-              )
-
-            }
+            renderItem={({ item }) =>
+                  <Contact {...item} onDelete={this.deleteContact} onUpdate={this.updateContact}/>
             }
           />
         </View>
