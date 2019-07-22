@@ -38,47 +38,9 @@ export default class AddContacts extends Component {
 
     render() {
         return (
-            <Modal
-                onRequestClose={this.props.onCancel}
-                visible={this.props.isVisible}
-                animationType='fade'
-                transparent={true}
-                onShow={() => this.setState({ ...this.getInitialState() })}>
-                <TouchableWithoutFeedback onPress={this.props.onCancel}>
-                    <View style={styles.offset}></View>
-                </TouchableWithoutFeedback>
-                <View style={styles.container}>
-                    <Text style={styles.header}>Novo Contato...</Text>
-                    <View style={styles.textInputField}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Nome"
-                            onChangeText={name => this.setState({ name })}
-                            value={this.state.name} />
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Email"
-                            onChangeText={email => this.setState({ email })}
-                            value={this.state.email} />
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Avatar"
-                            onChangeText={avatar => this.setState({ avatar })}
-                            value={this.state.avatar} />
-                    </View>
-                    <View style={styles.buttonsField}>
-                        <TouchableOpacity onPress={this.props.onCancel}>
-                            <Text style={styles.buttonCancel}>Cancelar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.save}>
-                            <Text style={styles.buttonSave}>Salvar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <TouchableWithoutFeedback onPress={this.props.onCancel}>
-                    <View style={styles.offset}></View>
-                </TouchableWithoutFeedback>
-            </Modal>
+            <View>
+                <Text>AAAAA</Text>
+            </View>
         )
     }
 }

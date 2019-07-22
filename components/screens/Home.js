@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
+  Text,
   View,
   FlatList,
   TouchableOpacity,
@@ -11,8 +12,8 @@ import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 
 
-import Contact from '../components/contact'
-import AddContacts from './AddContacts';
+import Contact from '../components/Contact'
+import AddContacts from './AddContactModal';
 
 
 /*Todo
@@ -124,13 +125,16 @@ export default class App extends Component {
             data={this.state.contactsToShown}
             keyExtractor={item => `${item.id}`}
             renderItem={({ item }) =>
-                  <Contact {...item} onDelete={this.deleteContact} onUpdate={this.updateContact}/>
+              <Contact {...item} onDelete={this.deleteContact} onUpdate={this.updateContact} />
             }
           />
         </View>
         <ActionButton
           buttonColor={'#FC0'}
-          onPress={() => { this.setState({ showAddContacts: true }) }}></ActionButton>
+          onPress={
+            () => this.props.navigation.navigate('AddContacts')
+            /*() => { this.setState({ showAddContacts: true })} */ // Para Modal - For Modall
+          }></ActionButton>
       </View>
     );
   }
