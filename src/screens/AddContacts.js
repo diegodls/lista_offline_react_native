@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import {
-    Modal,
     Text,
-    TouchableWithoutFeedback,
     TouchableOpacity,
     StyleSheet,
     Alert,
     View,
     TextInput,
-    Keyboard
+    Image,
+    StatusBar,
+    Dimensions,
 } from 'react-native'
 
+import AsyncStorage from '@react-native-community/async-storage'
 export default class AddContacts extends Component {
 
     constructor(props) {
@@ -20,67 +21,128 @@ export default class AddContacts extends Component {
 
     getInitialState = () => {
         return {
-            name: 'test',
-            email: 'test@test.com',
-            avatar: 'smileo',
+            name: '',
+            email: '',
+            avatar: '',
         }
 
     }
 
-    save = () => {
-        if (!this.state.name.trim()) {
-            Alert.alert('Dados Invalidos', 'Informe dados validos!')
-            return
-        }
-        const data = { ...this.state }
-        this.props.onSave(data)
+    componentWillUnmount() {
+
+    }
+
+    save = async () => {
+        const data = await AsyncStorage.getItem('contacts')
+        const contacts = JSON.parse(data) || []
+        contacts.push({
+            id: Math.round(Math.random() * 1000),
+            name: this.state.name,
+            email: this.state.email,
+            avatar: this.state.avatar,
+        })
+
+        AsyncStorage.setItem('contacts', JSON.stringify(contacts))
+        
+        this.state = this.getInitialState()
+    }
+
+    onCancel = () => {
+        this.props.navigation.navigate('Home')
     }
 
     render() {
         return (
-            <View>
-                <Text>AAAAA</Text>
-            </View>
+            <View style={styles.container}>
+                <StatusBar backgroundColor="#FFF" barStyle="dark-content" />
+                <Text style={styles.header}>Novo Contato...</Text>
+                <View style={styles.contactImageContainer} >
+                    <Image style={styles.contactImage} source={require('../imgs/add_photo-512.png')} />
+                </View>
+                <View style={styles.textInputContainer}>
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder="Nome"
+                        onChangeText={name => this.setState({ name })}
+                        value={this.state.name} />
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder="Email"
+                        onChangeText={email => this.setState({ email })}
+                        value={this.state.email} />
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder="Avatar"
+                        onChangeText={avatar => this.setState({ avatar })}
+                        value={this.state.avatar} />
+                </View>
+
+                <View style={styles.buttonsContainer}>
+                    <TouchableOpacity onPress={this.onCancel}>
+                        <Text style={styles.buttonCancel}>Voltar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.save}>
+                        <Text style={styles.buttonSave}>Salvar</Text>
+                    </TouchableOpacity>
+                </View>
+
+            </View >
+
         )
     }
 }
 const styles = StyleSheet.create({
-    offset: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.7)',
+    header: {
+        fontWeight: 'bold',
+        textAlign: 'center',
+        padding: 15,
+        fontSize: 20,
     },
     container: {
         backgroundColor: '#FFF',
-        justifyContent: 'space-between',
-        paddingTop: 5,
-        paddingBottom: 5,
-        borderRadius: 5,
+        paddingHorizontal: 5,
+        flex: 1,
     },
-    header: {
-        textAlign: 'center',
-        padding: 15,
-        fontSize: 15,
+    contactImageContainer: {
+        width: '100%',
+        height: Dimensions.get('window').width / 2,
+        alignItems: 'center',
     },
-    textInputField: {
+    contactImage: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: Dimensions.get('window').width / 2,
+        resizeMode: 'center',
 
+    },
+    textInputContainer: {
+        flex: 1,
+        justifyContent: 'center',
     },
     textInput: {
         borderWidth: 1,
         borderColor: '#CCC',
-        backgroundColor: '#e3e3e3',
+        //backgroundColor: '#e3e3e3',
+        backgroundColor: '#FFF',
         paddingLeft: 5,
+        height: 50,
+        fontSize: 20,
+        width: '100%',
     },
-    buttonsField: {
+    buttonsContainer: {
         flexDirection: 'row',
+        padding: 5,
+        flex: 1,
         justifyContent: 'flex-end',
-        paddingTop: 5,
-        paddingBottom: 5,
+        alignItems: 'flex-end',
     },
     buttonCancel: {
         backgroundColor: "#F00",
         color: '#000',
         fontWeight: 'bold',
-        height: 40,
+        height: 50,
+        fontSize: 20,
         textAlignVertical: 'center',
         padding: 10,
         margin: 2,
@@ -89,7 +151,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#CF0",
         color: '#000',
         fontWeight: 'bold',
-        height: 40,
+        height: 50,
+        fontSize: 20,
         textAlignVertical: 'center',
         padding: 10,
         margin: 2,

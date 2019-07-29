@@ -5,12 +5,13 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Alert
+  Alert,
+  StatusBar,
+  ToastAndroid
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
-
 
 import Contact from '../components/Contact'
 import AddContacts from './AddContactModal';
@@ -24,6 +25,8 @@ import AddContacts from './AddContactModal';
  - Try/Catch AsyncStorage
  - Splash Screen, icone e nome
  - Criar metodo para filtrar os contatos, melhorando a visualização
+ - Adicionar login/sistema de suuários
+ - Verificar se já tem o email salvo
 
 */
 
@@ -33,29 +36,30 @@ export default class App extends Component {
   state = {
     contactsToSave: [],
     contactsToShown: [],
+    contactReceived: [],
     refreshList: false,
     searchValue: "",
     searchingList: false,
     showAddContacts: false,
+
   }
 
   componentDidMount = async () => {
-    this.recoverFromStorage();
+    this.recoverFromStorage()
+  }
+
+  componentWillUnmount() {
+
   }
 
   recoverFromStorage = async () => {
+    ToastAndroid.show('Atualizando', ToastAndroid.SHORT)
+    //Alert.alert('Atualizando', 'Buscando itens salvos')
     const data = await AsyncStorage.getItem('contacts')
     const contacts = JSON.parse(data) || []
     this.setState({ contactsToSave: contacts, contactsToShown: contacts, refreshList: false })
   }
 
-  w
-
-  saveInStorage = () => {
-    AsyncStorage.setItem('contacts', JSON.stringify(this.state.contactsToSave))
-    this.recoverFromStorage()
-
-  }
 
   //o metodo abaixo vai gerenciar a atualização da lista
   //the above method deal with list update
@@ -68,26 +72,12 @@ export default class App extends Component {
       })
   }
 
-  addContact = contact => {
-    const contacts = [...this.state.contactsToSave]
-    contacts.push({
-      id: Math.round(Math.random() * 1000),
-      name: contact.name,
-      email: contact.email,
-      avatar: contact.avatar,
-    })
-    this.setState({ contactsToSave: contacts, showAddContacts: false }, this.saveInStorage)
-
-  }
-
   deleteContact = id => {
     const contacts = this.state.contactsToSave.filter(contact => contact.id != id)
     this.setState({ contactsToSave: contacts }, this.saveInStorage)
-
   }
 
   searchContact = (value) => {
-
     const contactsToFilter = [...this.state.contactsToSave]
     this.setState({ searchValue: value }, () => {
       const contactsFiltered = contactsToFilter.filter(contact => {
@@ -95,7 +85,6 @@ export default class App extends Component {
       })
       this.setState({ contactsToShown: contactsFiltered })
     })
-
   }
 
   renderListHeader = () => {
@@ -104,7 +93,6 @@ export default class App extends Component {
       onCancel={this.recoverFromStorage}
       onClear={this.recoverFromStorage}
       value={this.state.searchValue} />
-
   }
 
   updateContact = id => {
@@ -114,6 +102,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar backgroundColor="#FFF" barStyle="dark-content" />
         <AddContacts isVisible={this.state.showAddContacts}
           onSave={this.addContact}
           onCancel={() => this.setState({ showAddContacts: false })} />
@@ -131,9 +120,9 @@ export default class App extends Component {
         </View>
         <ActionButton
           buttonColor={'#FC0'}
-          onPress={
-            () => this.props.navigation.navigate('AddContacts')
-            /*() => { this.setState({ showAddContacts: true })} */ // Para Modal - For Modall
+          onPress={() => { this.props.navigation.navigate("AddContacts") }
+
+            // () => { this.props.navigation.navigate("AddContacts", { callHome: this.addContactHandler.bind(this) }) }
           }></ActionButton>
       </View>
     );
