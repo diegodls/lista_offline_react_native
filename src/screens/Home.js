@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   FlatList,
-  TouchableOpacity,
   Alert,
   StatusBar,
-  ToastAndroid
+  ToastAndroid,
+  Platform,
 } from 'react-native'
+
+import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import AsyncStorage from '@react-native-community/async-storage'
 import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
@@ -19,7 +20,7 @@ import AddContacts from './AddContactModal';
 
 /*Todo
  - Evento de atualizar dados ao clicar (trabalhando nisso)
- - Checar informações (se digitou algo errado, campos vazios e etc...)
+ - Tratamentos/Checar informações (se digitou algo errado, campos vazios e etc...)
  - Foto ao invés dos avatares
  - Botão de adicionar ao invés do adicionar ali em cima
  - Try/Catch AsyncStorage
@@ -41,15 +42,10 @@ export default class App extends Component {
     searchValue: "",
     searchingList: false,
     showAddContacts: false,
-
   }
 
   componentDidMount = async () => {
     this.recoverFromStorage()
-  }
-
-  componentWillUnmount() {
-
   }
 
   recoverFromStorage = async () => {
@@ -60,7 +56,11 @@ export default class App extends Component {
     this.setState({ contactsToSave: contacts, contactsToShown: contacts, refreshList: false })
   }
 
+  saveInStorage = () => {
+    AsyncStorage.setItem('contacts', JSON.stringify(this.state.contactsToSave))
+    this.recoverFromStorage()
 
+  }
   //o metodo abaixo vai gerenciar a atualização da lista
   //the above method deal with list update
   onRefreshHandler = () => {
@@ -96,7 +96,10 @@ export default class App extends Component {
   }
 
   updateContact = id => {
-    Alert.alert('Item escolhido:', `${id}`)
+    //ToastAndroid.show('Selecionado: ' + `${id}`, ToastAndroid.LONG)
+    //Alert.alert('Item escolhido:', `${id}`)
+
+    this.props.navigation.navigate("AddContacts", {isUpdating: true, id: id})
   }
 
   render() {
@@ -120,7 +123,7 @@ export default class App extends Component {
         </View>
         <ActionButton
           buttonColor={'#FC0'}
-          onPress={() => { this.props.navigation.navigate("AddContacts") }
+          onPress={() => { this.props.navigation.navigate("AddContacts", {isUpdating: false}) }
 
             // () => { this.props.navigation.navigate("AddContacts", { callHome: this.addContactHandler.bind(this) }) }
           }></ActionButton>
@@ -131,6 +134,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0,
     flex: 1,
     alignItems: 'center',
     flexDirection: 'column'

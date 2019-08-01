@@ -9,42 +9,106 @@ import {
     Image,
     StatusBar,
     Dimensions,
+    ToastAndroid,
 } from 'react-native'
 
 import AsyncStorage from '@react-native-community/async-storage'
 export default class AddContacts extends Component {
 
-    constructor(props) {
-        super(props)
-        this.state = this.getInitialState()
+    state = {
+        name: '',
+        email: '',
+        avatar: '',
+        isUpdating: false,
+        idToUpdate: '',
     }
 
-    getInitialState = () => {
-        return {
-            name: '',
-            email: '',
-            avatar: '',
+    componentDidMount = async () => {
+        this.startState()
+    }
+
+    startState = async () => {
+
+        const Updating = this.props.navigation.state.params.isUpdating
+
+        if (Updating) {
+            const id = this.props.navigation.state.params.id
+
+            if (!id) {
+                ToastAndroid.show("Problemas ao encontrar o ID!", ToastAndroid.SHORT)
+                return
+            }
+            ToastAndroid.show("Atualizando: " +
+                "ID: " + id + "\n" +
+                "isUpdating: " + Updating, ToastAndroid.SHORT)
+            const data = await AsyncStorage.getItem('contacts')
+            const contacts = JSON.parse(data) || []
+            const index = contacts.findIndex(element => element.id === id)
+
+            this.setState({
+                id: contacts[index].id,
+                name: contacts[index].name,
+                email: contacts[index].email,
+                avatar: contacts[index].avatar,
+                isUpdating: true,
+                idToUpdate: id,
+            })
+
+        } else {
+            this.setState({
+                id: '',
+                name: '',
+                email: '',
+                avatar: '',
+                isUpdating: false,
+                idToUpdate: '',
+            })
+            ToastAndroid.show("Novo" + "\n" + "isUpdating: " + this.state.isUpdating, ToastAndroid.LONG)
+
         }
-
-    }
-
-    componentWillUnmount() {
-
     }
 
     save = async () => {
         const data = await AsyncStorage.getItem('contacts')
         const contacts = JSON.parse(data) || []
-        contacts.push({
-            id: Math.round(Math.random() * 1000),
-            name: this.state.name,
-            email: this.state.email,
-            avatar: this.state.avatar,
-        })
+
+        if (!this.state.name.trim() || !this.state.email.trim() || !this.state.avatar.trim()) {
+            ToastAndroid.show("Campos vazios, preencha-os...", ToastAndroid.LONG)
+            return
+        }
+
+        if (this.state.isUpdating) {
+
+            id = this.state.idToUpdate
+            const index = contacts.findIndex(element => element.id === id)
+            contacts[index] = {
+                ...contacts[index],
+                name: this.state.name,
+                email: this.state.email,
+                avatar: this.state.avatar,
+            }
+        } else {
+            contacts.push({
+                id: Math.round(Math.random() * 1000),
+                name: this.state.name,
+                email: this.state.email,
+                avatar: this.state.avatar,
+            })
+
+            this.setState({
+                id: '',
+                name: '',
+                email: '',
+                avatar: '',
+                isUpdating: false,
+                idToUpdate: '',
+            })
+
+        }
 
         AsyncStorage.setItem('contacts', JSON.stringify(contacts))
-        
-        this.state = this.getInitialState()
+        ToastAndroid.show("Salvo com sucesso!", ToastAndroid.LONG)
+
     }
 
     onCancel = () => {
@@ -69,11 +133,13 @@ export default class AddContacts extends Component {
                         style={styles.textInput}
                         placeholder="Email"
                         onChangeText={email => this.setState({ email })}
+                        autoCapitalize='none'
                         value={this.state.email} />
                     <TextInput
                         style={styles.textInput}
                         placeholder="Avatar"
                         onChangeText={avatar => this.setState({ avatar })}
+                        autoCapitalize='none'
                         value={this.state.avatar} />
                 </View>
 
