@@ -7,9 +7,9 @@ Armazenamento de dados é feito na memoria interna do dispositivo, ao fechar o a
 
 # Dependencias
 [react-native-swipeable](https://github.com/jshanson7/react-native-swipeable)\
-[react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
-[react-native-action-button](https://github.com/mastermoo/react-native-action-button)
-[react-native-elements](https://github.com/react-native-training/react-native-elements)
+[react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)\
+[react-native-action-button](https://github.com/mastermoo/react-native-action-button)\
+[react-native-elements](https://github.com/react-native-training/react-native-elements)\
 [react-navigation](https://reactnavigation.org/docs/en/getting-started.html)
 
 Swipeable, que permite deletar(ou qualquer outra função) ao deslizar para os lados (vide imagem exemplo abaixo).\
